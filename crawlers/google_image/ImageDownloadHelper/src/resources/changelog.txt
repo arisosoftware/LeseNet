@@ -1,0 +1,7 @@
+19-06-29 06:47:05,442 WARN  us.codecraft.webmagic.downloader.HttpClientDownloader(HttpClientDownloader.java:91) ## download page https://github.com/code4craft error
+javax.net.ssl.SSLException: Received fatal alert: protocol_version
+
+
+fixed: 
+download Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 8 and add to classpath
+https://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html

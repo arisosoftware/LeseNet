@@ -6,6 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="src/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="test" value="true"/>
@@ -20,7 +21,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jars/local_policy.jar"/>
 	<classpathentry kind="lib" path="jars/US_export_policy.jar"/>
-	<classpathentry kind="lib" path="jars/WebMagicSingle.jar" sourcepath="/webmagic-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webmagic-core"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

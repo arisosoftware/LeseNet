@@ -20,7 +20,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jars/local_policy.jar"/>
 	<classpathentry kind="lib" path="jars/US_export_policy.jar"/>
-	<classpathentry kind="lib" path="jars/WebMagicSingle.jar"/>
+	<classpathentry kind="lib" path="jars/WebMagicSingle.jar" sourcepath="/webmagic-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

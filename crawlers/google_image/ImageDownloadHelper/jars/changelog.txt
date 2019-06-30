@@ -5,3 +5,18 @@ javax.net.ssl.SSLException: Received fatal alert: protocol_version
 fixed: 
 download Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 8 and add to classpath
 https://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+
+
+
+https://xbuba.com/questions/55214400
+
+https://cn.yizeng.me/2014/03/23/evaluate-and-validate-xpath-css-selectors-in-chrome-developer-tools/
+https://webmagic.io/docs/zh/posts/ch4-basic-page-processor/selectable.html
+https://blog.csdn.net/LEoe_/article/details/72934365
+
+
+https://github.com/xtuhcy/gecco/blob/master/README_CN.md
+
+
+
+https://github.com/CrawlScript/WebCollector/blob/master/pom.xml  -- this one, can be the next target.

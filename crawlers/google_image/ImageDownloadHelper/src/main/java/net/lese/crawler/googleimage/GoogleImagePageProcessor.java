@@ -1,13 +1,16 @@
 package net.lese.crawler.googleimage;
 
-import java.util.HashSet;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -16,17 +19,37 @@ public class GoogleImagePageProcessor implements PageProcessor {
 
 	private Site site = Site.me().setRetryTimes(10).setSleepTime(5000).addHeader("User-Agent", "Chrome");
 
-	private Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	public Site getSite() {
 		return site;
 	}
+	
+	void DebugPageText(Page page)
+	{
+		String url = page.getRequest().getUrl();
+		String digest = "/tmp/t2/HTML"+"."+DigestUtils.md5Hex(url)+".htm";				
+		try {
+			FileUtils.writeByteArrayToFile(new File(digest), page.getBytes());
+		} catch (IOException e) {		 
+			e.printStackTrace();
+		}
+	}
 
 	public void process(Page page) {
 
+		  URLCodec encoder = new URLCodec();
+ 
+		  
+		  
+		  
 		String currUrl = page.getRequest().getUrl();
-		logger.info("Debug process(Page page) %s", currUrl);
+		logger.info(String.format("Debug process(Page page) %s", currUrl));
 
+		DebugPageText(page);
+		
+		
+		
 		if (page.getRequest().isBinaryContent()) {
 			page.putField("png", page.getBytes());
 		} else {
@@ -34,19 +57,18 @@ public class GoogleImagePageProcessor implements PageProcessor {
 			List<String> list = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a").all();
 			List<String> imageList = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a/img").all();
 
-			if (list.size() == 0 || imageList.size() == 0) {
-				return;
-			}
-
+		  
 			for (String picKey : list) {
 				if (picKey.trim().length() == 0) {
 					continue;
 				}
 
 				String url = StringUtils.substringBetween(picKey, "<a href=\"/url?q=", "&amp;sa=U&amp;");
-				// page.addTargetRequest(url);
-				page.putField(App.FullSizeImage, url);
-				logger.debug("Download source image:%s", url);
+				
+				String digest = App.FullSizeImage+"."+DigestUtils.md5Hex(url);							
+				page.putField(digest, url);
+
+				logger.debug(String.format("Add Download source image:%s", url));
 			}
 
 			for (String picKey : imageList) {
@@ -54,9 +76,10 @@ public class GoogleImagePageProcessor implements PageProcessor {
 					continue;
 				}
 				String imgurl = StringUtils.substringBetween(picKey, "\" src=\"", "\" width=\"");
-				page.putField(App.SampleImage, imgurl);
-				logger.debug("Download googlecache image:%s", imgurl);
-
+				String digest = App.SampleImage+"."+DigestUtils.md5Hex(imgurl);				
+				page.putField(digest, imgurl);
+				
+				logger.debug(String.format("Add Download googlecache image:%s", imgurl));
 			}
 
 			List<String> pageList = page.getHtml().xpath("//*[@id=\"nav\"]/tbody/tr/td[12]/a").all();
@@ -64,9 +87,15 @@ public class GoogleImagePageProcessor implements PageProcessor {
 				String nextpage = pageList.get(0);
 
 				nextpage = StringUtils.substringBetween(nextpage, "\"fl\" href=\"/", "\" style=\"text-align:left\">");
-
-				nextpage = "https://google.com/" + nextpage;
-				logger.debug("nextpage:%s", nextpage);
+					
+				nextpage = "https://www.google.com/" + nextpage;
+				try {
+					nextpage = encoder.decode(nextpage);
+				} catch (DecoderException e) {				 
+					e.printStackTrace();
+				}
+				
+				logger.info(String.format("nextpage:%s", nextpage));
 				page.addTargetRequest(nextpage);
 			}
 		}

@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.UUID;
-
+ 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,8 +22,7 @@ public class ImageDownloadUtil {
 	
 			String digest = DigestUtils.md5Hex(url);
 			
-			String fileName = "T" + digest ;//UUID.randomUUID().toString();
-			
+			String fileName = "T" + digest ; 
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			String picType = url.substring(url.lastIndexOf(".") + 1);
 
@@ -71,7 +69,7 @@ public class ImageDownloadUtil {
 		String fullPath = savePath + File.separator + fileName + "." + picType;
 		File file = new File(fullPath);
 		if (file.exists() && file.length() > 1000) {
-			return null;
+			return fullPath;
 		}
 
 		InputStream in = null;
@@ -89,7 +87,7 @@ public class ImageDownloadUtil {
 			}
 			fout.flush();
 			fout.close();
-			return file.getAbsolutePath();
+			return fullPath;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

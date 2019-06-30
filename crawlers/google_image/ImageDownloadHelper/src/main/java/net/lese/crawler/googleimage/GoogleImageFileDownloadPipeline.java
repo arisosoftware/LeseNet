@@ -3,11 +3,12 @@ package net.lese.crawler.googleimage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.LoggerFactory;
 
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -15,7 +16,8 @@ import us.codecraft.webmagic.pipeline.Pipeline;
 
 public class GoogleImageFileDownloadPipeline implements Pipeline {
 
-	private Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(getClass());
+
 	private DigestUtils md5Util = new DigestUtils();
 	private String saveFolder = "";
 	private int picDownloadThread;
@@ -55,8 +57,8 @@ public class GoogleImageFileDownloadPipeline implements Pipeline {
 			String key = entry.getKey();
 			String url = (String) entry.getValue();
 			String realfile = util.downLoadImage(url, saveFolder);
-			logger.info("Success download %s from URL %s", realfile, url);
-
+			logger.info(String.format( "Success DownloadImageUrl  %s from URL %s", realfile, url));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,17 +68,18 @@ public class GoogleImageFileDownloadPipeline implements Pipeline {
 	public void process(ResultItems resultItems, Task task) {
 
 		String processUrl = resultItems.getRequest().getUrl();
-		logger.info("GoogleImageFileDownloadPipeline get page:  %s ", processUrl);
+		logger.debug(String.format("GoogleImageFileDownloadPipeline get page:  %s ", processUrl));
 
 		for (Map.Entry<String, Object> entry : resultItems.getAll().entrySet()) {
 
 			try {
 				String key = entry.getKey();
-				if (key == "png") {
-					// n/a
-				} else if (key == App.FullSizeImage) {
+				
+				logger.info(String.format("Get key %s, value %s", key, (String)entry.getValue()));
+				
+				if (key.startsWith(App.FullSizeImage)) {
 					DownloadImageUrl(entry);
-				} else if (key == App.SampleImage) {
+				} else if (key.startsWith(App.SampleImage)) {
 					DownloadImageUrl(entry);
 				}
 			} catch (Exception e) {

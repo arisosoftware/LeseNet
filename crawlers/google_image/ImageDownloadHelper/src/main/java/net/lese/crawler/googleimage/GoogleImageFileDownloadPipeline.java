@@ -57,7 +57,7 @@ public class GoogleImageFileDownloadPipeline implements Pipeline {
 			String key = entry.getKey();
 			String url = (String) entry.getValue();
 			String realfile = util.downLoadImage(url, saveFolder);
-			logger.info(String.format( "Success DownloadImageUrl  %s from URL %s", realfile, url));
+			logger.debug(String.format( "Success DownloadImageUrl  %s from URL %s", realfile, url));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

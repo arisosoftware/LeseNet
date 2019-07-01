@@ -2,6 +2,8 @@ package net.lese.crawler.googleimage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.commons.codec.DecoderException;
@@ -17,6 +19,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 
 public class GoogleImagePageProcessor implements PageProcessor {
 
+	static long SeqId = 10000;
 	private Site site = Site.me().setRetryTimes(10).setSleepTime(5000).addHeader("User-Agent", "Chrome");
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -24,32 +27,29 @@ public class GoogleImagePageProcessor implements PageProcessor {
 	public Site getSite() {
 		return site;
 	}
-	
-	void DebugPageText(Page page)
-	{
+
+	void DebugPageText(Page page) {
+		SeqId++;
 		String url = page.getRequest().getUrl();
-		String digest = "/tmp/t2/HTML"+"."+DigestUtils.md5Hex(url)+".htm";				
+		String digest = "/tmp/t2/HTML." + SeqId + "." + DigestUtils.md5Hex(url) + ".htm";
 		try {
 			FileUtils.writeByteArrayToFile(new File(digest), page.getBytes());
-		} catch (IOException e) {		 
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	
+
 	public void process(Page page) {
 
-		  URLCodec encoder = new URLCodec();
- 
-		  
-		  
-		  
+		URLCodec encoder = new URLCodec();
+
 		String currUrl = page.getRequest().getUrl();
 		logger.info(String.format("Debug process(Page page) %s", currUrl));
 
 		DebugPageText(page);
-		
-		
-		
+
 		if (page.getRequest().isBinaryContent()) {
 			page.putField("png", page.getBytes());
 		} else {
@@ -57,15 +57,14 @@ public class GoogleImagePageProcessor implements PageProcessor {
 			List<String> list = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a").all();
 			List<String> imageList = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a/img").all();
 
-		  
 			for (String picKey : list) {
 				if (picKey.trim().length() == 0) {
 					continue;
 				}
 
 				String url = StringUtils.substringBetween(picKey, "<a href=\"/url?q=", "&amp;sa=U&amp;");
-				
-				String digest = App.FullSizeImage+"."+DigestUtils.md5Hex(url);							
+
+				String digest = App.FullSizeImage + "." + DigestUtils.md5Hex(url);
 				page.putField(digest, url);
 
 				logger.debug(String.format("Add Download source image:%s", url));
@@ -76,9 +75,9 @@ public class GoogleImagePageProcessor implements PageProcessor {
 					continue;
 				}
 				String imgurl = StringUtils.substringBetween(picKey, "\" src=\"", "\" width=\"");
-				String digest = App.SampleImage+"."+DigestUtils.md5Hex(imgurl);				
+				String digest = App.SampleImage + "." + DigestUtils.md5Hex(imgurl);
 				page.putField(digest, imgurl);
-				
+
 				logger.debug(String.format("Add Download googlecache image:%s", imgurl));
 			}
 
@@ -87,14 +86,11 @@ public class GoogleImagePageProcessor implements PageProcessor {
 				String nextpage = pageList.get(0);
 
 				nextpage = StringUtils.substringBetween(nextpage, "\"fl\" href=\"/", "\" style=\"text-align:left\">");
-					
+
 				nextpage = "https://www.google.com/" + nextpage;
-				try {
-					nextpage = encoder.decode(nextpage);
-				} catch (DecoderException e) {				 
-					e.printStackTrace();
-				}
-				
+
+				nextpage = App.decode(nextpage);
+
 				logger.info(String.format("nextpage:%s", nextpage));
 				page.addTargetRequest(nextpage);
 			}

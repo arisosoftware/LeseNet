@@ -23,7 +23,15 @@ public class App {
 
 	public static void main(String[] args) {
 
-	
+//		String newUrl = "https://www.google.com/search?q=cookie&amp;newwindow=1&amp;biw=1120&amp;bih=636&amp;ie=UTF-8&amp;tbm=isch&amp;ei=UkoZXeLnMIi5tAbqvYfIBw&amp;start=20&amp;sa=N";
+//		newUrl = decode(newUrl);
+//		System.out.println(newUrl);
+//		System.exit(0);
+//		
+		
+		
+		
+		
 		String keyword = "cookie";
 
 		String url = "https://www.google.com/search?q=" + keyword
@@ -57,11 +65,7 @@ public class App {
 	
 	
 	/*
-	String newUrl = "https://www.google.com/search?q=cookie&amp;newwindow=1&amp;biw=1120&amp;bih=636&amp;ie=UTF-8&amp;tbm=isch&amp;ei=UkoZXeLnMIi5tAbqvYfIBw&amp;start=20&amp;sa=N";
-		newUrl = decode(newUrl);
-		System.out.println(newUrl);
-		System.exit(0);
-		
+
 	 */
 	 
 }

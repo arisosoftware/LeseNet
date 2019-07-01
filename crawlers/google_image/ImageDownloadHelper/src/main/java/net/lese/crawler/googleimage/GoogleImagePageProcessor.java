@@ -39,7 +39,7 @@ public class GoogleImagePageProcessor implements PageProcessor {
 		}
 	}
 
-	
+	static long ImageId=100000;
 
 	public void process(Page page) {
 
@@ -55,25 +55,28 @@ public class GoogleImagePageProcessor implements PageProcessor {
 		} else {
 
 			List<String> list = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a").all();
+			//List<String> list = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr[*]/td[*]/a").all();
 			List<String> imageList = page.getHtml().xpath("//*[@id=\"ires\"]/table/tbody/tr/td/a/img").all();
 
-			for (String picKey : list) {
-				if (picKey.trim().length() == 0) {
-					continue;
-				}
-
-				String url = StringUtils.substringBetween(picKey, "<a href=\"/url?q=", "&amp;sa=U&amp;");
-
-				String digest = App.FullSizeImage + "." + DigestUtils.md5Hex(url);
-				page.putField(digest, url);
-
-				logger.debug(String.format("Add Download source image:%s", url));
-			}
+//			for (String picKey : list) {
+//				if (picKey.trim().length() == 0) {
+//					continue;
+//				}
+//				logger.info(String.format("Add picKey :%s", picKey));
+//				
+//				String url = StringUtils.substringBetween(picKey, "<a href=\"/url?q=", "\" target=\"_blank\"");
+//				url = App.decode(url);
+//				String digest = App.FullSizeImage + "." + DigestUtils.md5Hex(url);
+//				page.putField(digest, url);
+//
+//				logger.info(String.format("Add Download source image:%s", url));
+//			}
 
 			for (String picKey : imageList) {
 				if (picKey.trim().length() == 0) {
 					continue;
 				}
+				ImageId++;
 				String imgurl = StringUtils.substringBetween(picKey, "\" src=\"", "\" width=\"");
 				String digest = App.SampleImage + "." + DigestUtils.md5Hex(imgurl);
 				page.putField(digest, imgurl);

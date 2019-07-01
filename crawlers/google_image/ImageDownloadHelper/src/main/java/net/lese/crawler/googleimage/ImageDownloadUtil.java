@@ -15,14 +15,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 public class ImageDownloadUtil {
-
+	static long ImageId=1000000;
 	public String downLoadImage(String url, String savePath) {
 
 		try {
-	
+			ImageId++;
 			String digest = DigestUtils.md5Hex(url);
 			
-			String fileName = "T" + digest ; 
+			String fileName = String.format("T%d.%s", ImageId,digest) ; 
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			String picType = url.substring(url.lastIndexOf(".") + 1);
 
